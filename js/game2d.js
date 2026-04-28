@@ -102,6 +102,8 @@ const Game2D = (() => {
     bgSegments=[];
 
     Nav.go('s-game');
+    const swipeZone = document.getElementById('swipe-zone');
+    if (swipeZone) swipeZone.style.pointerEvents = 'auto';
     document.getElementById('ov-pause').classList.add('hidden');
 
     // Show swipe hint first time

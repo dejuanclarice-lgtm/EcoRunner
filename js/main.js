@@ -74,16 +74,6 @@ window.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('touchstart', _unlockAudio, { once: true, passive: true });
   document.addEventListener('click',      _unlockAudio, { once: true, passive: true });
 
-  // ── Safe swipe hint handler ──
-  window.closeSwipeHint = () => {
-    try { SoundFX.play('click'); } catch(e) {}
-    const hint = document.getElementById('swipe-hint');
-    if (hint) hint.classList.add('hidden');
-    if (window.Game && typeof window.Game.resume === 'function') {
-      try { window.Game.resume(); } catch(e) {}
-    }
-  };
-
   // ── Prevent pull-to-refresh and iOS bounce ──
   document.body.addEventListener('touchmove', e => {
     if (!document.getElementById('s-game').classList.contains('active')) {

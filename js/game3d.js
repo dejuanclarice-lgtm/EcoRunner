@@ -505,6 +505,8 @@ const Game = (() => {
     segs=[];obs=[];eco=[];parts=[];floats=[];
     _buildScene(cfg);
     Nav.go('s-game');
+    const swipeZone = document.getElementById('swipe-zone');
+    if (swipeZone) swipeZone.style.pointerEvents = 'auto';
     document.getElementById('ov-pause').classList.add('hidden');
     // Show swipe hint first time
     try {
