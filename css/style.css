@@ -309,7 +309,7 @@ body {
 /* ═══════════════════════════════════════════════
    SCREEN 3 · LEVEL COMPLETE
    ═══════════════════════════════════════════════ */
-#s-levelcomplete { justify-content: flex-start; }
+#s-levelcomplete { justify-content: center; }
 .lc-bg-wrap { position:fixed; inset:0; z-index:0; overflow:hidden; }
 .lc-bg-city { position:absolute; inset:0; background:radial-gradient(ellipse at 50% 30%,#1a6b3a 0%,#0d2e1a 70%); }
 .lc-bg-overlay { position:absolute; inset:0; background:linear-gradient(to bottom,rgba(0,0,0,.2),rgba(0,0,0,.5)); }
@@ -322,8 +322,9 @@ body {
   padding-bottom:calc(20px + var(--sab));
 }
 .lc-inner {
-  min-height: 100%; width:100%; max-width:420px; margin:0 auto;
-  display:flex; flex-direction:column; align-items:center;
+  min-height: calc(100% - (var(--sat) + calc(20px + var(--sab))));
+  width:100%; max-width:420px; margin:0 auto;
+  display:flex; flex-direction:column; justify-content:center; align-items:center;
   gap:clamp(12px,3vw,18px); padding:clamp(20px,6vw,36px) clamp(16px,5vw,24px);
 }
 .lc-title { font-family:var(--fh); font-size:clamp(2.2rem,10vw,3.6rem); font-weight:900; text-align:center; line-height:1.05; }
