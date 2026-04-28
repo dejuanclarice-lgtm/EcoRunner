@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="theme-color" content="#0d3b1e"/>
+  <!-- MIT App Inventor WebView compatibility -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <title>EcoRunner 3D</title>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<!-- ══════════════════════════════════
+     SCREEN 1 · MAIN MENU (centered)
+     ══════════════════════════════════ -->
+<div id="s-menu" class="screen active">
+  <div class="menu-bg-wrap">
+    <div class="menu-bg-city"></div>
+    <div class="menu-bg-vignette"></div>
+    <div class="floating-leaf fl1">🌿</div>
+    <div class="floating-leaf fl2">🌱</div>
+    <div class="floating-leaf fl3">🌳</div>
+    <div class="floating-leaf fl4">☀️</div>
+  </div>
+
+  <div class="menu-center">
+    <!-- Logo -->
+    <div class="menu-logo-block">
+      <div class="menu-globe">🌍</div>
+      <h1 class="menu-game-title">EcoRunner</h1>
+      <p class="menu-game-sub">Green City Adventure</p>
+      <div class="sdg-chip">SDGs 13 · 12 · 11 · 15 · 3</div>
+    </div>
+
+    <!-- Stats -->
+    <div class="menu-stats glass-pill">
+      <div class="mstat">
+        <span class="mstat-v" id="m-level">1</span>
+        <span class="mstat-l">Level</span>
+      </div>
+      <div class="mstat-sep"></div>
+      <div class="mstat">
+        <span class="mstat-v" id="m-best">0</span>
+        <span class="mstat-l">Best Score</span>
+      </div>
+      <div class="mstat-sep"></div>
+      <div class="mstat">
+        <span class="mstat-v" id="m-items">0</span>
+        <span class="mstat-l">Items</span>
+      </div>
+    </div>
+
+    <!-- Start -->
+    <button class="btn-play-main" onclick="Game.startFromMenu()">
+      <span class="bpm-icon">▶</span> Start Game
+    </button>
+
+    <!-- Grid buttons -->
+    <div class="menu-grid">
+      <button class="mgrid-btn glass-card" onclick="Nav.go('s-achievements')">
+        <span class="mgb-icon">🏆</span>
+        <span class="mgb-label">Achievements</span>
+      </button>
+      <button class="mgrid-btn glass-card" onclick="Nav.go('s-leaderboard')">
+        <span class="mgb-icon">📊</span>
+        <span class="mgb-label">Leaderboard</span>
+      </button>
+      <button class="mgrid-btn glass-card htp-btn" onclick="SoundFX.play('click');Nav.go('s-howtoplay')">
+        <span class="mgb-icon">❓</span>
+        <span class="mgb-label">How to Play</span>
+      </button>
+    </div>
+
+    <!-- Bottom row -->
+    <div class="menu-bottom-row">
+      <button class="mbot-btn glass-card" onclick="Nav.go('s-profile')">
+        <div class="mbot-avatar" id="menu-avatar-thumb">🏃</div>
+        <span id="menu-player-name">EcoHero</span>
+      </button>
+      <button class="mbot-btn glass-card" onclick="Nav.go('s-settings')">
+        <span>⚙️</span>
+        <span>Settings</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     SCREEN 2 · GAMEPLAY
+     ══════════════════════════════════ -->
+<div id="s-game" class="screen">
+  <canvas id="gameCanvas"></canvas>
+
+  <!-- HUD -->
+  <div id="game-hud">
+    <div class="hud-l">
+      <button class="hud-icon-btn" onclick="Game.pause()" id="pause-btn">⏸</button>
+      <div class="hud-score-wrap">
+        <div class="hud-micro-lbl">SCORE</div>
+        <div class="hud-score-val" id="h-score">0</div>
+      </div>
+    </div>
+    <div class="hud-c">
+      <div class="hud-micro-lbl">ECO HEALTH</div>
+      <div class="hud-ecobar"><div class="hud-ecofill" id="h-ecofill"></div></div>
+      <div class="hud-world-badge" id="h-world">Grey City</div>
+      <div class="hud-level-progress"><div class="hud-lvl-label">LVL <span id="h-lvlnum">1</span></div><div class="hud-lvlbar"><div class="hud-lvlfill" id="h-lvlfill" style="width:0%"></div></div></div>
+    </div>
+    <div class="hud-r">
+      <div class="hud-lives" id="h-lives"></div>
+      <div class="hud-score-wrap" style="align-items:flex-end">
+        <div class="hud-micro-lbl">STREAK</div>
+        <div class="hud-score-val" style="color:#2ecc71" id="h-streak">0x</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Swipe zone (full screen, invisible) -->
+  <div id="swipe-zone"></div>
+
+  <!-- Swipe hint (first time only) -->
+  <div id="swipe-hint" class="swipe-hint hidden">
+    <div class="sh-row"><span class="sh-arrow">←</span><span>Move left: Swipe Left</span></div>
+    <div class="sh-row"><span class="sh-arrow">→</span><span>Move right: Swipe Right</span></div>
+    <button class="sh-ok" onclick="SoundFX.play('click');this.parentElement.classList.add('hidden')">Got it! ✓</button>
+  </div>
+
+  <!-- Pause overlay -->
+  <div id="ov-pause" class="full-overlay hidden">
+    <div class="ov-card">
+      <div class="ov-title">⏸ Paused</div>
+      <p class="ov-sub">Take a breath, eco-runner!</p>
+      <button class="btn-play-main sm" onclick="Game.resume()">▶ Resume</button>
+      <button class="btn-ghost" onclick="Game.restart()">🔄 Restart</button>
+      <button class="btn-ghost" onclick="Game.quit()">🏠 Main Menu</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     SCREEN 3 · LEVEL COMPLETE
+     ══════════════════════════════════ -->
+<div id="s-levelcomplete" class="screen lc-theme-success">
+  <div class="lc-bg-wrap">
+    <div class="lc-bg-city"></div>
+    <div class="lc-bg-overlay"></div>
+  </div>
+  <div class="lc-scroll">
+    <div class="lc-inner">
+
+      <!-- Title: "LEVEL COMPLETE!" or "GAME OVER" — set by JS -->
+      <h1 class="lc-title lc-title-win" id="lc-title">LEVEL COMPLETE!</h1>
+      <p class="lc-sub">Great job cleaning the city! 🌱</p>
+
+      <!-- Stats card — shown for both success and game over -->
+      <div class="lc-card glass-card-dark">
+        <div class="stars-row">
+          <span class="star-ico" id="st1">★</span>
+          <span class="star-ico" id="st2">★</span>
+          <span class="star-ico" id="st3">★</span>
+        </div>
+
+        <div class="lc-big-num" id="lc-score">0</div>
+        <div class="lc-small-lbl">Total Score</div>
+
+        <div class="lc-stats-grid">
+          <div class="lc-stat-cell"><span class="lsc-v" id="lc-items">0</span><span class="lsc-l">Eco Items</span></div>
+          <div class="lc-stat-cell"><span class="lsc-v" id="lc-streak">0x</span><span class="lsc-l">Max Streak</span></div>
+          <div class="lc-stat-cell"><span class="lsc-v" id="lc-acc">0%</span><span class="lsc-l">Accuracy</span></div>
+          <div class="lc-stat-cell bonus-cell"><span class="lsc-v gold" id="lc-bonus">+0</span><span class="lsc-l">Bonus</span></div>
+        </div>
+
+        <div class="lc-badge-row" id="lc-badge-row" style="display:none">
+          <div class="lc-badge-icon">🏆</div>
+          <div>
+            <div class="lc-badge-title">New Badge Unlocked!</div>
+            <div class="lc-badge-name" id="lc-badge-name">Eco Explorer 🌞</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Primary action: NEXT LEVEL / RESTART / RETRY — set by JS -->
+      <button class="btn-play-main wide lc-btn-next" id="lc-next-btn">NEXT LEVEL &#9658;</button>
+      <!-- HOME always visible -->
+      <button class="btn-ghost wide lc-btn-home" onclick="Game.quit()">HOME</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     SCREEN 4 · ACHIEVEMENTS
+     ══════════════════════════════════ -->
+<div id="s-achievements" class="screen screen-scroll" style="background:linear-gradient(160deg,#1a1040,#2d1b69,#1a1040)">
+  <div class="std-header">
+    <button class="back-btn" onclick="Nav.back()">←</button>
+    <div class="std-header-text">
+      <h2 class="std-title">Achievements</h2>
+      <p class="std-sub" id="ach-unlocked-count">0 of 8 unlocked</p>
+    </div>
+    <div class="hdr-icon-badge">🏆</div>
+  </div>
+  <div class="ach-overall-track">
+    <div class="ach-overall-bar" id="ach-overall-bar"></div>
+  </div>
+  <div class="ach-list" id="ach-list"></div>
+</div>
+
+<!-- ══════════════════════════════════
+     SCREEN 5 · LEADERBOARD
+     ══════════════════════════════════ -->
+<div id="s-leaderboard" class="screen screen-scroll" style="background:linear-gradient(160deg,#0a1628,#1e3a5f,#0a1628)">
+  <div class="std-header">
+    <button class="back-btn" onclick="Nav.back()">←</button>
+    <div class="std-header-text">
+      <h2 class="std-title">Leaderboard</h2>
+      <p class="std-sub">Global Rankings</p>
+    </div>
+    <div class="hdr-icon-badge">🏆</div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="lb-tabs">
+    <button class="lb-tab active" id="tab-global" onclick="LBScreen.tab('global')">🌍 Global</button>
+    <button class="lb-tab" id="tab-friends" onclick="LBScreen.tab('friends')">👥 Friends</button>
+    <button class="lb-tab" id="tab-local" onclick="LBScreen.tab('local')">📍 Local</button>
+  </div>
+
+  <!-- Tab info bar -->
+  <div class="lb-info-bar" id="lb-info-bar">
+    <span id="lb-tab-desc">Top players worldwide competing for the highest eco score</span>
+    <button class="lb-refresh-btn" onclick="LBScreen.refresh()">↻ Refresh</button>
+  </div>
+
+  <!-- Podium top 3 -->
+  <div class="lb-podium" id="lb-podium"></div>
+
+  <!-- Rest of list -->
+  <div class="lb-list" id="lb-list"></div>
+
+  <!-- Add friend code section -->
+  <div class="lb-add-friend" id="lb-add-friend" style="display:none">
+    <p class="lb-friend-info">Share your Friend Code to play with others:</p>
+    <div class="lb-friend-code-row">
+      <div class="lb-friend-code" id="lb-friend-code">ECO-0000</div>
+      <button class="lb-copy-btn" onclick="LBScreen.copyCode()">📋 Copy</button>
+    </div>
+    <input class="lb-code-input" id="lb-code-input" type="text" placeholder="Enter friend's code..." maxlength="8"/>
+    <button class="btn-play-main sm" onclick="LBScreen.addFriend()">Add Friend</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     SCREEN 6 · PROFILE
+     ══════════════════════════════════ -->
+<div id="s-profile" class="screen screen-scroll" style="background:linear-gradient(160deg,#0d2e1a,#1a5c3a,#0d2e1a)">
+  <div class="std-header">
+    <button class="back-btn" onclick="Nav.back()">←</button>
+    <div class="std-header-text">
+      <h2 class="std-title">Profile</h2>
+      <p class="std-sub">Your eco identity</p>
+    </div>
+    <div class="hdr-icon-badge">👤</div>
+  </div>
+
+  <div class="profile-wrap">
+    <!-- Avatar section -->
+    <div class="profile-avatar-section">
+      <div class="profile-avatar-ring" onclick="Profile.pickAvatar()">
+        <div class="profile-avatar-big" id="profile-avatar-display">🏃</div>
+        <div class="profile-avatar-img-wrap" id="profile-img-wrap" style="display:none">
+          <img id="profile-img" src="" alt="Profile"/>
+        </div>
+        <div class="profile-avatar-edit-badge">📷</div>
+      </div>
+      <input type="file" id="profile-img-input" accept="image/*" style="display:none" onchange="Profile.onImgSelected(event)"/>
+      <p class="profile-avatar-hint">Tap to change photo</p>
+    </div>
+
+    <!-- Name section -->
+    <div class="profile-card glass-card-dark">
+      <div class="profile-field">
+        <label class="pf-label">Player Name</label>
+        <div class="pf-row">
+          <div class="pf-value" id="pf-name">EcoHero</div>
+          <button class="pf-edit-btn" onclick="Profile.editName()">✏️ Edit</button>
+        </div>
+      </div>
+      <div class="profile-divider"></div>
+      <div class="profile-field">
+        <label class="pf-label">Friend Code</label>
+        <div class="pf-row">
+          <div class="pf-value gold" id="pf-code">ECO-0000</div>
+          <button class="pf-edit-btn" onclick="Profile.copyCode()">📋 Copy</button>
+        </div>
+      </div>
+      <div class="profile-divider"></div>
+      <div class="profile-field">
+        <label class="pf-label">SDG Rank</label>
+        <div class="pf-value eco-green" id="pf-rank">Eco Recruit 🌱</div>
+      </div>
+    </div>
+
+    <!-- Stats card -->
+    <div class="profile-card glass-card-dark">
+      <div class="profile-stats-title">Your Stats</div>
+      <div class="profile-stats-grid">
+        <div class="psg-cell"><span class="psg-v" id="ps-score">0</span><span class="psg-l">Best Score</span></div>
+        <div class="psg-cell"><span class="psg-v" id="ps-level">1</span><span class="psg-l">Level</span></div>
+        <div class="psg-cell"><span class="psg-v" id="ps-items">0</span><span class="psg-l">Eco Items</span></div>
+        <div class="psg-cell"><span class="psg-v" id="ps-streak">0</span><span class="psg-l">Best Streak</span></div>
+      </div>
+    </div>
+
+    <!-- Emoji avatar picker -->
+    <div class="profile-card glass-card-dark">
+      <div class="profile-stats-title">Choose Avatar</div>
+      <div class="emoji-picker-grid" id="emoji-picker-grid"></div>
+    </div>
+
+    <button class="btn-ghost wide" onclick="Nav.back()">← Back to Menu</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     SCREEN 7 · SETTINGS
+     ══════════════════════════════════ -->
+<div id="s-settings" class="screen screen-scroll" style="background:linear-gradient(160deg,#1a1040,#2d1b69,#1a1040)">
+  <div class="std-header">
+    <button class="back-btn" onclick="Nav.back()">←</button>
+    <div class="std-header-text">
+      <h2 class="std-title">Settings</h2>
+    </div>
+    <button class="hdr-action-btn" onclick="document.getElementById('about-card').scrollIntoView({behavior:'smooth', block:'center'})">📱 About App</button>
+  </div>
+  <div class="settings-wrap">
+    <div class="settings-section glass-card-dark">
+      <div class="set-row"><span>🔊 Sound Effects</span><label class="toggle-sw"><input type="checkbox" id="s-sfx" checked onchange="Settings.toggle('sfx',this.checked)"/><span class="tsw-track"><span class="tsw-thumb"></span></span></label></div>
+      <div class="set-sep"></div>
+      <div class="set-row"><span>🎵 Background Music</span><label class="toggle-sw"><input type="checkbox" id="s-music" checked onchange="Settings.toggle('music',this.checked)"/><span class="tsw-track"><span class="tsw-thumb"></span></span></label></div>
+      <div class="set-sep"></div>
+      <div class="set-row"><span>📳 Vibration</span><label class="toggle-sw"><input type="checkbox" id="s-vib" checked onchange="Settings.toggle('vib',this.checked)"/><span class="tsw-track"><span class="tsw-thumb"></span></span></label></div>
+    </div>
+    <div class="settings-section glass-card-dark about-card" id="about-card">
+      <!-- Hero Banner -->
+      <div class="about-hero">
+        <div class="about-hero-icon">🌿</div>
+        <div class="about-hero-name">EcoRunner 3D</div>
+        <div class="about-hero-version">Version 3.0 · Your Eco-Action Adventure</div>
+        <p class="about-hero-tagline">An endless runner where every swipe is a step toward a greener planet — dodge pollution, collect eco items, and race for a sustainable future.</p>
+      </div>
+
+      <!-- Key Features -->
+      <div class="about-section-label">KEY FEATURES</div>
+      <div class="about-feature-list">
+        <div class="about-feature-item">
+          <div class="about-feature-icon">🌲</div>
+          <div>
+            <div class="about-feature-title">Eco Item Collection</div>
+            <p>Collect trees, solar panels, recycle bins, water orbs, and wind turbines to boost your eco score and restore the environment.</p>
+          </div>
+        </div>
+        <div class="about-feature-sep"></div>
+        <div class="about-feature-item">
+          <div class="about-feature-icon">🏃</div>
+          <div>
+            <div class="about-feature-title">Endless Runner Gameplay</div>
+            <p>Swipe left and right to dodge pollution obstacles like factories, smog clouds, and trash piles in an ever-accelerating city world.</p>
+          </div>
+        </div>
+        <div class="about-feature-sep"></div>
+        <div class="about-feature-item">
+          <div class="about-feature-icon">🏆</div>
+          <div>
+            <div class="about-feature-title">Leaderboard & Progress</div>
+            <p>Compete globally, track your high scores, and climb the SDG-themed leaderboard to prove your eco-hero status.</p>
+          </div>
+        </div>
+        <div class="about-feature-sep"></div>
+        <div class="about-feature-item">
+          <div class="about-feature-icon">📳</div>
+          <div>
+            <div class="about-feature-title">Customizable Experience</div>
+            <p>Toggle sound effects, music, and vibration to tailor your gameplay experience — anytime, anywhere.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SDG Goals Alignment -->
+      <div class="about-section-label">SDG GOALS ALIGNMENT</div>
+      <div class="about-text-card">
+        <p>EcoRunner 3D supports the United Nations Sustainable Development Goals by raising environmental awareness, promoting responsible consumption, and inspiring players to take climate action through interactive play.</p>
+      </div>
+      <div class="about-sdg-grid">
+        <div class="about-sdg-card sdg-climate">
+          <div class="sdg-card-badge">SDG 13</div>
+          <div class="sdg-card-header">
+            <div class="sdg-card-icon">🌍</div>
+            <div class="sdg-card-title">Climate Action</div>
+          </div>
+          <p>Every eco item collected symbolizes a real-world climate action — from planting trees to harnessing clean energy — encouraging awareness of climate change.</p>
+        </div>
+        <div class="about-sdg-card sdg-cities">
+          <div class="sdg-card-badge">SDG 11</div>
+          <div class="sdg-card-header">
+            <div class="sdg-card-icon">🏙️</div>
+            <div class="sdg-card-title">Sustainable Cities</div>
+          </div>
+          <p>The game world depicts urban environments where players restore city health by removing pollution, promoting the vision of clean, livable cities for all.</p>
+        </div>
+        <div class="about-sdg-card sdg-consumption">
+          <div class="sdg-card-badge">SDG 12</div>
+          <div class="sdg-card-header">
+            <div class="sdg-card-icon">♻️</div>
+            <div class="sdg-card-title">Responsible Consumption</div>
+          </div>
+          <p>Players learn to distinguish eco-friendly choices from wasteful ones, reinforcing habits of mindful consumption and responsible resource use.</p>
+        </div>
+        <div class="about-sdg-card sdg-life">
+          <div class="sdg-card-badge">SDG 15</div>
+          <div class="sdg-card-header">
+            <div class="sdg-card-icon">🌲</div>
+            <div class="sdg-card-title">Life on Land</div>
+          </div>
+          <p>Collecting nature icons like trees and water orbs highlights the importance of protecting biodiversity and restoring healthy ecosystems on land.</p>
+        </div>
+        <div class="about-sdg-card sdg-health sdg-full">
+          <div class="sdg-card-badge">SDG 3</div>
+          <div class="sdg-card-header">
+            <div class="sdg-card-icon">❤️</div>
+            <div class="sdg-card-title">Good Health & Well-being</div>
+          </div>
+          <p>Promotes an active, screen-positive lifestyle by making environmental stewardship fun and accessible — contributing to both mental engagement and health literacy for all ages.</p>
+        </div>
+      </div>
+
+    </div>
+    <div class="dev-block">
+      <p><b>De Juan, Clarice</b></p>
+      <p>CIT 238 · West Visayas State University</p>
+      <p class="dev-dim">SDG 13 – Climate Action, SDG 11 - Sustainable Cities, SDG 12 - Responsible Consumption. SDG 15 - Life on Land, SDG 3 - Good Health and Well-being · v3.0</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     MODALS
+     ══════════════════════════════════ -->
+<!-- Edit name modal -->
+<div id="modal-name" class="modal hidden">
+  <div class="modal-card">
+    <h3 class="modal-title">✏️ Edit Player Name</h3>
+    <input id="name-inp" type="text" class="modal-input" maxlength="16" placeholder="Your eco name..."/>
+    <div class="modal-btns">
+      <button class="btn-play-main sm" onclick="Profile.saveName()">Save</button>
+      <button class="btn-ghost sm" onclick="closeModal('modal-name')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════
+     SCREEN · HOW TO PLAY
+     ══════════════════════════════════ -->
+<div id="s-howtoplay" class="screen screen-scroll htp-screen">
+  <div class="std-header htp-header">
+    <button class="back-btn" onclick="SoundFX.play('click');Nav.back()">←</button>
+    <div class="std-header-text">
+      <h2 class="std-title">How to Play</h2>
+      <p class="std-sub">Master the EcoRunner!</p>
+    </div>
+    <div class="hdr-icon-badge">❓</div>
+  </div>
+
+  <div class="htp-body">
+
+    <!-- Hero banner -->
+    <div class="htp-hero">
+      <div class="htp-hero-emoji">🌍</div>
+      <div class="htp-hero-text">
+        <h3 class="htp-hero-title">Save the City!</h3>
+        <p class="htp-hero-desc">Swipe through three lanes, collect eco items, and dodge pollution to restore the city to green!</p>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="htp-section-label">🕹️ Controls</div>
+    <div class="htp-cards-row">
+      <div class="htp-control-card">
+        <div class="htp-ctrl-arrow htp-left">←</div>
+        <div class="htp-ctrl-label">Swipe Left</div>
+        <div class="htp-ctrl-sub">Move to left lane</div>
+      </div>
+      <div class="htp-control-card">
+        <div class="htp-ctrl-arrow htp-right">→</div>
+        <div class="htp-ctrl-label">Swipe Right</div>
+        <div class="htp-ctrl-sub">Move to right lane</div>
+      </div>
+    </div>
+
+    <!-- Eco Items -->
+    <div class="htp-section-label">✅ Collect These — Eco Items</div>
+    <div class="htp-items-grid">
+      <div class="htp-item-card good">
+        <span class="htp-item-ico">🌲</span>
+        <span class="htp-item-name">Tree</span>
+        <span class="htp-item-pts">+10 pts</span>
+      </div>
+      <div class="htp-item-card good">
+        <span class="htp-item-ico">☀️</span>
+        <span class="htp-item-name">Solar Panel</span>
+        <span class="htp-item-pts">+15 pts</span>
+      </div>
+      <div class="htp-item-card good">
+        <span class="htp-item-ico">♻️</span>
+        <span class="htp-item-name">Recycle Bin</span>
+        <span class="htp-item-pts">+12 pts</span>
+      </div>
+      <div class="htp-item-card good">
+        <span class="htp-item-ico">💧</span>
+        <span class="htp-item-name">Water Orb</span>
+        <span class="htp-item-pts">+10 pts</span>
+      </div>
+      <div class="htp-item-card good">
+        <span class="htp-item-ico">🌬️</span>
+        <span class="htp-item-name">Wind Turbine</span>
+        <span class="htp-item-pts">+20 pts</span>
+      </div>
+    </div>
+
+    <!-- Obstacles -->
+    <div class="htp-section-label">❌ Avoid These — Obstacles</div>
+    <div class="htp-items-grid">
+      <div class="htp-item-card bad">
+        <span class="htp-item-ico">🏭</span>
+        <span class="htp-item-name">Factory</span>
+        <span class="htp-item-pts">−❤️ Life</span>
+      </div>
+      <div class="htp-item-card bad">
+        <span class="htp-item-ico">🌫️</span>
+        <span class="htp-item-name">Smog Cloud</span>
+        <span class="htp-item-pts">−❤️ Life</span>
+      </div>
+      <div class="htp-item-card bad">
+        <span class="htp-item-ico">🗑️</span>
+        <span class="htp-item-name">Trash Pile</span>
+        <span class="htp-item-pts">−❤️ Life</span>
+      </div>
+      <div class="htp-item-card bad">
+        <span class="htp-item-ico">🚗</span>
+        <span class="htp-item-name">Broken Car</span>
+        <span class="htp-item-pts">−❤️ Life</span>
+      </div>
+      <div class="htp-item-card bad">
+        <span class="htp-item-ico">🔥</span>
+        <span class="htp-item-name">Fire</span>
+        <span class="htp-item-pts">−❤️ Life</span>
+      </div>
+    </div>
+
+    <!-- Scoring -->
+    <div class="htp-section-label">⭐ Scoring Tips</div>
+    <div class="htp-tip-list">
+      <div class="htp-tip-row">
+        <span class="htp-tip-ico">🔥</span>
+        <div><b>Build a Streak!</b> Collecting eco items in a row multiplies your score bonus.</div>
+      </div>
+      <div class="htp-tip-row">
+        <span class="htp-tip-ico">🌍</span>
+        <div><b>Eco Health Bar</b> fills as you collect items — when full, the city transforms to green!</div>
+      </div>
+      <div class="htp-tip-row">
+        <span class="htp-tip-ico">❤️</span>
+        <div><b>3 Lives</b> per game. Lose them all and it's game over!</div>
+      </div>
+      <div class="htp-tip-row">
+        <span class="htp-tip-ico">⬆️</span>
+        <div><b>Level Up</b> after completing each stage — the city gets greener as you progress!</div>
+      </div>
+      <div class="htp-tip-row">
+        <span class="htp-tip-ico">🏆</span>
+        <div><b>Unlock Achievements</b> by reaching score milestones and collecting eco items!</div>
+      </div>
+    </div>
+
+     <!-- SDG Note -->
+    <div class="htp-section-label">🌱 SDG Goals Highlight</div>
+    <div class="htp-sdg-grid">
+      <div class="htp-sdg-card">
+        <div class="htp-sdg-icon">🌍</div>
+        <div>
+          <div class="htp-sdg-title">SDG 13 — Climate Action</div>
+          <div class="htp-sdg-desc">Take climate action in the game by collecting eco items and reducing pollution to help the city recover.</div>
+        </div>
+      </div>
+      <div class="htp-sdg-card">
+        <div class="htp-sdg-icon">♻️</div>
+        <div>
+          <div class="htp-sdg-title">SDG 12 — Responsible Consumption</div>
+          <div class="htp-sdg-desc">Choose eco-friendly items and reduce waste by collecting the right resources in the game.</div>
+        </div>
+      </div>
+      <div class="htp-sdg-card">
+        <div class="htp-sdg-icon">🏙️</div>
+        <div>
+          <div class="htp-sdg-title">SDG 11 — Sustainable Cities</div>
+          <div class="htp-sdg-desc">Restore city health by removing pollution and creating cleaner, safer urban spaces.</div>
+        </div>
+      </div>
+      <div class="htp-sdg-card">
+        <div class="htp-sdg-icon">🌲</div>
+        <div>
+          <div class="htp-sdg-title">SDG 15 — Life on Land</div>
+          <div class="htp-sdg-desc">Protect nature and biodiversity by collecting trees and restoring green areas.</div>
+        </div>
+      </div>
+      <div class="htp-sdg-card">
+        <div class="htp-sdg-icon">❤️</div>
+        <div>
+          <div class="htp-sdg-title">SDG 3 — Good Health & Well-being</div>
+          <div class="htp-sdg-desc">Play for a healthy mindset — environmental action in the game supports real-world well-being.</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-play-main wide htp-start-btn" onclick="SoundFX.play('click');Nav.back();setTimeout(()=>Game.startFromMenu(),200)">
+      <span>▶</span> Play Now!
+    </button>
+    <button class="btn-ghost wide" onclick="SoundFX.play('click');Nav.back()">← Back to Menu</button>
+
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast-msg hidden"></div>
+
+<!-- SCRIPTS -->
+<script src="js/three.min.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/data.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/profile.js"></script>
+<script src="js/leaderboard.js"></script>
+<script src="js/game3d.js"></script>
+<script src="js/game2d.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
