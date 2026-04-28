@@ -29,20 +29,26 @@ window.addEventListener('DOMContentLoaded', () => {
     // Fallback: init 2D engine
     Game2D.init();
     window.ActiveGame = Game2D;
-
-    // Proxy Game calls to active engine so HTML buttons keep working
-    window.Game = {
-      init: () => {},
-      isWebGLOk: () => false,
-      startFromMenu: () => Game2D.startFromMenu(),
-      startLevel:    (l) => Game2D.startLevel(l),
-      pause:         () => Game2D.pause(),
-      resume:        () => Game2D.resume(),
-      restart:       () => Game2D.restart(),
-      quit:          () => Game2D.quit(),
-      nextLevel:     () => Game2D.startLevel(2),
-    };
   }
+
+  // Proxy Game calls to whichever engine is active so HTML buttons always work.
+  window.Game = {
+    init: () => window.ActiveGame?.init?.(),
+    isWebGLOk: () => window.ActiveGame?.isWebGLOk?.() ?? false,
+    startFromMenu: () => window.ActiveGame?.startFromMenu?.(),
+    startLevel:    (l) => window.ActiveGame?.startLevel?.(l),
+    pause:         () => window.ActiveGame?.pause?.(),
+    resume:        () => window.ActiveGame?.resume?.(),
+    restart:       () => window.ActiveGame?.restart?.(),
+    quit:          () => window.ActiveGame?.quit?.(),
+    nextLevel:     () => window.ActiveGame?.nextLevel?.(),
+  };
+
+  window.dismissSwipeHint = () => {
+    const hint = document.getElementById('swipe-hint');
+    if (hint) hint.classList.add('hidden');
+    try { SoundFX.play('click'); } catch (e) {}
+  };
 
   // ── Init menu display ──
   MenuScreen.refresh();
