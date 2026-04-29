@@ -33,7 +33,7 @@
       <div class="menu-globe">🌍</div>
       <h1 class="menu-game-title">EcoRunner</h1>
       <p class="menu-game-sub">Green City Adventure</p>
-      <div class="sdg-chip">SDGs 13 · 12 · 11 · 15 · 3</div>
+      <div class="sdg-chip">SDGs 3 · 11 · 12 · 13 · 15</div>
     </div>
 
     <!-- Stats -->
@@ -69,7 +69,8 @@
         <span class="mgb-icon">📊</span>
         <span class="mgb-label">Leaderboard</span>
       </button>
-      <button class="mgrid-btn glass-card htp-btn" onclick="SoundFX.play('click');Nav.go('s-howtoplay')">
+
+      <button class="mgrid-btn glass-card" onclick="Nav.go('s-howtoplay')">
         <span class="mgb-icon">❓</span>
         <span class="mgb-label">How to Play</span>
       </button>
@@ -186,7 +187,7 @@
       <!-- Primary action: NEXT LEVEL / RESTART / RETRY — set by JS -->
       <button class="btn-play-main wide lc-btn-next" id="lc-next-btn">NEXT LEVEL &#9658;</button>
       <!-- HOME always visible -->
-      <button class="btn-ghost wide lc-btn-home" onclick="Game.quit()">HOME</button>
+      <button class="btn-ghost wide lc-btn-home" onclick="Game.quit()">MAIN MENU</button>
     </div>
   </div>
 </div>
@@ -396,12 +397,12 @@
       </div>
       <div class="about-sdg-grid">
         <div class="about-sdg-card sdg-climate">
-          <div class="sdg-card-badge">SDG 13</div>
+          <div class="sdg-card-badge">SDG 3</div>
           <div class="sdg-card-header">
-            <div class="sdg-card-icon">🌍</div>
-            <div class="sdg-card-title">Climate Action</div>
+            <div class="sdg-card-icon">❤️</div>
+            <div class="sdg-card-title">Good Health & Well-being</div>
           </div>
-          <p>Every eco item collected symbolizes a real-world climate action — from planting trees to harnessing clean energy — encouraging awareness of climate change.</p>
+          <p>Promotes an active, screen-positive lifestyle by making environmental stewardship fun and accessible — contributing to both mental engagement and health literacy for all ages.</p>
         </div>
         <div class="about-sdg-card sdg-cities">
           <div class="sdg-card-badge">SDG 11</div>
@@ -420,6 +421,14 @@
           <p>Players learn to distinguish eco-friendly choices from wasteful ones, reinforcing habits of mindful consumption and responsible resource use.</p>
         </div>
         <div class="about-sdg-card sdg-life">
+          <div class="sdg-card-badge">SDG 13</div>
+          <div class="sdg-card-header">
+            <div class="sdg-card-icon">🌍</div>
+            <div class="sdg-card-title">Climate Action</div>
+          </div>
+          <p>Every eco item collected symbolizes a real-world climate action — from planting trees to harnessing clean energy — encouraging awareness of climate change.</p>
+        </div>
+        <div class="about-sdg-card sdg-health sdg-full">
           <div class="sdg-card-badge">SDG 15</div>
           <div class="sdg-card-header">
             <div class="sdg-card-icon">🌲</div>
@@ -427,21 +436,13 @@
           </div>
           <p>Collecting nature icons like trees and water orbs highlights the importance of protecting biodiversity and restoring healthy ecosystems on land.</p>
         </div>
-        <div class="about-sdg-card sdg-health sdg-full">
-          <div class="sdg-card-badge">SDG 3</div>
-          <div class="sdg-card-header">
-            <div class="sdg-card-icon">❤️</div>
-            <div class="sdg-card-title">Good Health & Well-being</div>
-          </div>
-          <p>Promotes an active, screen-positive lifestyle by making environmental stewardship fun and accessible — contributing to both mental engagement and health literacy for all ages.</p>
-        </div>
       </div>
 
     </div>
     <div class="dev-block">
       <p><b>De Juan, Clarice</b></p>
       <p>CIT 238 · West Visayas State University</p>
-      <p class="dev-dim">SDG 13 – Climate Action, SDG 11 - Sustainable Cities, SDG 12 - Responsible Consumption. SDG 15 - Life on Land, SDG 3 - Good Health and Well-being · v3.0</p>
+      <p class="dev-dim">SDG 3 - Good Health and Well-being, SDG 11 - Sustainable Cities, SDG 12 - Responsible Consumption, SDG 13 – Climate Action, SDG 15 - Life on Land · v3.0</p>
     </div>
   </div>
 </div>
@@ -590,17 +591,10 @@
     <div class="htp-section-label">🌱 SDG Goals Highlight</div>
     <div class="htp-sdg-grid">
       <div class="htp-sdg-card">
-        <div class="htp-sdg-icon">🌍</div>
+        <div class="htp-sdg-icon">❤️</div>
         <div>
-          <div class="htp-sdg-title">SDG 13 — Climate Action</div>
-          <div class="htp-sdg-desc">Take climate action in the game by collecting eco items and reducing pollution to help the city recover.</div>
-        </div>
-      </div>
-      <div class="htp-sdg-card">
-        <div class="htp-sdg-icon">♻️</div>
-        <div>
-          <div class="htp-sdg-title">SDG 12 — Responsible Consumption</div>
-          <div class="htp-sdg-desc">Choose eco-friendly items and reduce waste by collecting the right resources in the game.</div>
+          <div class="htp-sdg-title">SDG 3 — Good Health & Well-being</div>
+          <div class="htp-sdg-desc">Play for a healthy mindset — environmental action in the game supports real-world well-being.</div>
         </div>
       </div>
       <div class="htp-sdg-card">
@@ -611,17 +605,24 @@
         </div>
       </div>
       <div class="htp-sdg-card">
+        <div class="htp-sdg-icon">♻️</div>
+        <div>
+          <div class="htp-sdg-title">SDG 12 — Responsible Consumption</div>
+          <div class="htp-sdg-desc">Choose eco-friendly items and reduce waste by collecting the right resources in the game.</div>
+        </div>
+      </div>
+      <div class="htp-sdg-card">
+        <div class="htp-sdg-icon">🌍</div>
+        <div>
+          <div class="htp-sdg-title">SDG 13 — Climate Action</div>
+          <div class="htp-sdg-desc">Take climate action in the game by collecting eco items and reducing pollution to help the city recover.</div>
+        </div>
+      </div>
+      <div class="htp-sdg-card">
         <div class="htp-sdg-icon">🌲</div>
         <div>
           <div class="htp-sdg-title">SDG 15 — Life on Land</div>
           <div class="htp-sdg-desc">Protect nature and biodiversity by collecting trees and restoring green areas.</div>
-        </div>
-      </div>
-      <div class="htp-sdg-card">
-        <div class="htp-sdg-icon">❤️</div>
-        <div>
-          <div class="htp-sdg-title">SDG 3 — Good Health & Well-being</div>
-          <div class="htp-sdg-desc">Play for a healthy mindset — environmental action in the game supports real-world well-being.</div>
         </div>
       </div>
     </div>
