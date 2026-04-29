@@ -74,8 +74,10 @@ const Game2D = (() => {
   }
 
   function _resize() {
-    canvas.width  = window.innerWidth;
-    canvas.height = window.innerHeight;
+    const w = window.innerWidth  || document.documentElement.clientWidth  || screen.width;
+    const h = window.innerHeight || document.documentElement.clientHeight || screen.height;
+    canvas.width  = w;
+    canvas.height = h;
     // Redraw current frame if game is running/paused
     if (running || paused || over) _draw();
   }
@@ -102,6 +104,11 @@ const Game2D = (() => {
     bgSegments=[];
 
     Nav.go('s-game');
+    // Force canvas to fill the screen exactly after the screen becomes visible
+    _resize();
+    // MIT App Inventor WebView may settle layout slightly after screen shows — resize again
+    setTimeout(_resize, 100);
+    setTimeout(_resize, 300);
     const swipeZone = document.getElementById('swipe-zone');
     if (swipeZone) swipeZone.style.pointerEvents = 'auto';
     document.getElementById('ov-pause').classList.add('hidden');

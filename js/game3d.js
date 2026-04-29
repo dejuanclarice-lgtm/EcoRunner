@@ -480,7 +480,8 @@ const Game = (() => {
   }
 
   function _resize() {
-    const w=window.innerWidth, h=window.innerHeight;
+    const w = window.innerWidth  || document.documentElement.clientWidth  || screen.width;
+    const h = window.innerHeight || document.documentElement.clientHeight || screen.height;
     renderer.setSize(w,h,false);
     if(camera){ camera.aspect=w/h; camera.updateProjectionMatrix(); }
   }
@@ -505,6 +506,11 @@ const Game = (() => {
     segs=[];obs=[];eco=[];parts=[];floats=[];
     _buildScene(cfg);
     Nav.go('s-game');
+    // Force canvas/renderer to fill the screen exactly after the screen becomes visible
+    _resize();
+    // MIT App Inventor WebView may settle layout slightly after screen shows — resize again
+    setTimeout(_resize, 100);
+    setTimeout(_resize, 300);
     const swipeZone = document.getElementById('swipe-zone');
     if (swipeZone) swipeZone.style.pointerEvents = 'auto';
     document.getElementById('ov-pause').classList.add('hidden');

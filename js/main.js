@@ -13,8 +13,10 @@ window.addEventListener('DOMContentLoaded', () => {
   // ── Force canvas size immediately (WebView fix) ──
   const canvas = document.getElementById('gameCanvas');
   if (canvas) {
-    canvas.width  = window.innerWidth;
-    canvas.height = window.innerHeight;
+    const w = window.innerWidth  || document.documentElement.clientWidth  || screen.width;
+    const h = window.innerHeight || document.documentElement.clientHeight || screen.height;
+    canvas.width  = w;
+    canvas.height = h;
     canvas.style.width  = '100%';
     canvas.style.height = '100%';
   }
@@ -111,8 +113,16 @@ window.addEventListener('DOMContentLoaded', () => {
   // ── Handle window resize & orientation ──
   const _onResize = () => {
     const cv = document.getElementById('gameCanvas');
-    if (cv) { cv.width = window.innerWidth; cv.height = window.innerHeight; }
+    if (cv) {
+      // Use document dimensions as fallback for MIT App Inventor WebView
+      const w = window.innerWidth  || document.documentElement.clientWidth  || screen.width;
+      const h = window.innerHeight || document.documentElement.clientHeight || screen.height;
+      cv.width  = w;
+      cv.height = h;
+      cv.style.width  = w + 'px';
+      cv.style.height = h + 'px';
+    }
   };
   window.addEventListener('resize', _onResize);
-  window.addEventListener('orientationchange', () => setTimeout(_onResize, 300));
+  window.addEventListener('orientationchange', () => { setTimeout(_onResize, 100); setTimeout(_onResize, 300); });
 });

@@ -230,6 +230,11 @@ body {
 #s-game {
   background: radial-gradient(circle at top, rgba(46,204,113,.14), rgba(0,0,0,.98) 72%);
   overflow: hidden;
+  /* MIT App Inventor WebView: ensure the game screen fills the entire viewport */
+  position: fixed !important;
+  top: 0 !important; left: 0 !important;
+  width: 100vw !important; height: 100vh !important;
+  max-width: 100% !important; max-height: 100% !important;
 }
 #s-game::before {
   content: '';
@@ -240,10 +245,14 @@ body {
   z-index: 1;
 }
 #gameCanvas {
-  position: absolute; inset: 0;
+  position: absolute;
+  top: 0 !important; left: 0 !important;
   width: 100% !important; height: 100% !important;
+  min-width: 100% !important; min-height: 100% !important;
   display: block;
   z-index: 0;
+  /* Prevent any margin/padding causing offset in WebView */
+  margin: 0 !important; padding: 0 !important;
 }
 
 /* HUD */
