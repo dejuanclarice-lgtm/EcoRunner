@@ -39,13 +39,17 @@ const LBScreen = {
     document.getElementById('tab-' + name).classList.add('active');
 
     const infoEl = document.getElementById('lb-tab-desc');
+    const addFriendEl = document.getElementById('lb-add-friend');
 
     if (name === 'global') {
       infoEl.textContent = 'Top eco-runners worldwide competing for the highest green score';
+      if (addFriendEl) addFriendEl.style.display = 'none';
     } else if (name === 'friends') {
-      infoEl.textContent = 'Challenge your friends in the leaderboard!';
+      infoEl.textContent = 'Challenge your friends! Your friend list appears here.';
+      if (addFriendEl) addFriendEl.style.display = 'none';
     } else {
       infoEl.textContent = 'Top eco-runners in your local area (Western Visayas, PH)';
+      if (addFriendEl) addFriendEl.style.display = 'none';
     }
 
     this.render(name);
@@ -151,7 +155,7 @@ const LBScreen = {
     });
 
     if (rest.length === 0) {
-      list.innerHTML = '<div style="text-align:center;color:rgba(255,255,255,.4);padding:24px;font-size:.85rem">No other players yet.<br>Share your friend code to invite!</div>';
+      list.innerHTML = '<div style="text-align:center;color:rgba(255,255,255,.4);padding:24px;font-size:.85rem">No players found yet.<br>Play more games to rank up!</div>';
     }
   },
 

@@ -20,6 +20,9 @@ const Profile = {
     // Avatar
     this._updateAvatarDisplay();
 
+    // Friend code
+    document.getElementById('lb-friend-code').textContent = d.friendCode;
+
     // Emoji picker
     this._buildEmojiPicker();
   },

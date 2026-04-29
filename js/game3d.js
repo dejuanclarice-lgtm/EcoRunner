@@ -508,17 +508,6 @@ const Game = (() => {
     const swipeZone = document.getElementById('swipe-zone');
     if (swipeZone) swipeZone.style.pointerEvents = 'auto';
     document.getElementById('ov-pause').classList.add('hidden');
-    // Show swipe hint first time
-    try {
-      if (!localStorage.getItem('er_hint_shown')) {
-        const swipeHint = document.getElementById('swipe-hint');
-        if (swipeHint) swipeHint.classList.remove('hidden');
-        localStorage.setItem('er_hint_shown','1');
-      }
-    } catch(e) {
-      const swipeHint = document.getElementById('swipe-hint');
-      if (swipeHint) swipeHint.classList.remove('hidden');
-    }
     _updateHUD();
     SoundFX.startMusic();
     if(_raf) cancelAnimationFrame(_raf);
