@@ -123,13 +123,6 @@
   <!-- Swipe zone (full screen, invisible) -->
   <div id="swipe-zone"></div>
 
-  <!-- Swipe hint (first time only) -->
-  <div id="swipe-hint" class="swipe-hint hidden">
-    <div class="sh-row"><span class="sh-arrow">←</span><span>Move left: Swipe Left</span></div>
-    <div class="sh-row"><span class="sh-arrow">→</span><span>Move right: Swipe Right</span></div>
-    <button type="button" class="sh-ok" onclick="closeSwipeHint()">Got it! ✓</button>
-  </div>
-
   <!-- Pause overlay -->
   <div id="ov-pause" class="full-overlay hidden">
     <div class="ov-card">
@@ -242,16 +235,6 @@
   <!-- Rest of list -->
   <div class="lb-list" id="lb-list"></div>
 
-  <!-- Add friend code section -->
-  <div class="lb-add-friend" id="lb-add-friend" style="display:none">
-    <p class="lb-friend-info">Share your Friend Code to play with others:</p>
-    <div class="lb-friend-code-row">
-      <div class="lb-friend-code" id="lb-friend-code">ECO-0000</div>
-      <button class="lb-copy-btn" onclick="LBScreen.copyCode()">📋 Copy</button>
-    </div>
-    <input class="lb-code-input" id="lb-code-input" type="text" placeholder="Enter friend's code..." maxlength="8"/>
-    <button class="btn-play-main sm" onclick="LBScreen.addFriend()">Add Friend</button>
-  </div>
 </div>
 
 <!-- ══════════════════════════════════
@@ -630,7 +613,7 @@
     <button class="btn-play-main wide htp-start-btn" onclick="SoundFX.play('click');Nav.back();setTimeout(()=>Game.startFromMenu(),200)">
       <span>▶</span> Play Now!
     </button>
-    <button class="btn-ghost wide" onclick="SoundFX.play('click');Nav.back()">← Back to Menu</button>
+    <button class="btn-ghost wide" onclick="SoundFX.play('click');Nav.back()">Got it! ✓</button>
 
   </div>
 </div>

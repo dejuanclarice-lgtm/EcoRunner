@@ -39,18 +39,13 @@ const LBScreen = {
     document.getElementById('tab-' + name).classList.add('active');
 
     const infoEl = document.getElementById('lb-tab-desc');
-    const addFriendEl = document.getElementById('lb-add-friend');
 
     if (name === 'global') {
       infoEl.textContent = 'Top eco-runners worldwide competing for the highest green score';
-      addFriendEl.style.display = 'none';
     } else if (name === 'friends') {
-      infoEl.textContent = 'Challenge your friends! Share codes to add each other';
-      addFriendEl.style.display = 'flex';
-      document.getElementById('lb-friend-code').textContent = DataStore.d.friendCode;
+      infoEl.textContent = 'Challenge your friends in the leaderboard!';
     } else {
       infoEl.textContent = 'Top eco-runners in your local area (Western Visayas, PH)';
-      addFriendEl.style.display = 'none';
     }
 
     this.render(name);

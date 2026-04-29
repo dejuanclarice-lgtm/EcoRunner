@@ -109,11 +109,13 @@ const Game2D = (() => {
     // Show swipe hint first time
     try {
       if (!localStorage.getItem('er_hint_shown')) {
-        document.getElementById('swipe-hint').classList.remove('hidden');
+        const swipeHint = document.getElementById('swipe-hint');
+        if (swipeHint) swipeHint.classList.remove('hidden');
         localStorage.setItem('er_hint_shown','1');
       }
     } catch(e) {
-      document.getElementById('swipe-hint').classList.remove('hidden');
+      const swipeHint = document.getElementById('swipe-hint');
+      if (swipeHint) swipeHint.classList.remove('hidden');
     }
 
     _updateHUD();

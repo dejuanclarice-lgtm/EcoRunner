@@ -83,19 +83,11 @@ window.addEventListener('DOMContentLoaded', () => {
       Game.pause();
     }, { passive: false });
   }
-  const swipeOkBtn = document.querySelector('#swipe-hint .sh-ok');
-  if (swipeOkBtn) {
-    swipeOkBtn.addEventListener('click', () => { closeSwipeHint(); });
-    swipeOkBtn.addEventListener('touchend', e => {
-      e.preventDefault();
-      closeSwipeHint();
-    }, { passive: false });
-  }
 
   // ── Prevent pull-to-refresh and iOS bounce ──
   document.body.addEventListener('touchmove', e => {
     if (!document.getElementById('s-game').classList.contains('active')) {
-      const scrollable = e.target.closest('.screen-scroll,.lc-scroll,.profile-wrap,.settings-wrap,.ach-list,.lb-list,.lb-add-friend');
+      const scrollable = e.target.closest('.screen-scroll,.lc-scroll,.profile-wrap,.settings-wrap,.ach-list,.lb-list');
       if (!scrollable) e.preventDefault();
     }
   }, { passive: false });

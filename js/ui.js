@@ -236,14 +236,6 @@ function closeModal(id) {
   document.getElementById(id).classList.add('hidden');
 }
 
-function closeSwipeHint() {
-  SoundFX.play('click');
-  const hint = document.getElementById('swipe-hint');
-  if (hint) hint.classList.add('hidden');
-  const zone = document.getElementById('swipe-zone');
-  if (zone) zone.style.pointerEvents = 'auto';
-}
-
 function vibrate(pattern) {
   if (DataStore.d.vib && navigator.vibrate) navigator.vibrate(pattern);
 }
@@ -256,5 +248,4 @@ window.Settings = Settings;
 window.LCScreen = LCScreen;
 window.toast = toast;
 window.closeModal = closeModal;
-window.closeSwipeHint = closeSwipeHint;
 window.vibrate = vibrate;
