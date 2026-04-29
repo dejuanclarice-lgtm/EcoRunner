@@ -1,12 +1,12 @@
 // ══════════════════════════════════════════
 //  leaderboard.js  –  Leaderboard System
-//  Global / Friends / Local
+//  Daily / Weekly / Monthly
 // ══════════════════════════════════════════
 
 'use strict';
 
-// Simulated global players (realistic eco-themed community)
-const GLOBAL_PLAYERS = [
+// Simulated daily top players
+const DAILY_PLAYERS = [
   { name:'EcoWarrior',   level:25, score:15420, emoji:'⭐', color:'#f9c74f', online:true,  country:'PH' },
   { name:'GreenHero',    level:24, score:14250, emoji:'🌿', color:'#74c69d', online:true,  country:'JP' },
   { name:'TreeHugger',   level:23, score:13890, emoji:'🌲', color:'#cd7f32', online:false, country:'US' },
@@ -21,15 +21,40 @@ const GLOBAL_PLAYERS = [
   { name:'SkyRunner',    level:12, score:4100,  emoji:'☁️', color:'#ade8f4', online:false, country:'SG' },
 ];
 
-const LOCAL_PLAYERS = [
-  { name:'IloiloGreen',  level:8,  score:3200, emoji:'🌺', color:'#ff6b9d', online:true,  country:'PH' },
-  { name:'JaniuayHero',  level:6,  score:2100, emoji:'🌻', color:'#ffd60a', online:true,  country:'PH' },
-  { name:'WVSURunner',   level:5,  score:1800, emoji:'🎓', color:'#6c5ce7', online:false, country:'PH' },
-  { name:'EcoStudent',   level:4,  score:1200, emoji:'📚', color:'#4ecdc4', online:true,  country:'PH' },
+// Simulated weekly top players (higher accumulated scores)
+const WEEKLY_PLAYERS = [
+  { name:'EcoWarrior',   level:25, score:89500, emoji:'⭐', color:'#f9c74f', online:true,  country:'PH' },
+  { name:'GreenHero',    level:24, score:82300, emoji:'🌿', color:'#74c69d', online:true,  country:'JP' },
+  { name:'TreeHugger',   level:23, score:76400, emoji:'🌲', color:'#cd7f32', online:false, country:'US' },
+  { name:'CleanAir',     level:22, score:68900, emoji:'💧', color:'#4dd0e1', online:true,  country:'KR' },
+  { name:'SolarPunk',    level:21, score:61200, emoji:'☀️', color:'#f4845f', online:true,  country:'BR' },
+  { name:'EcoNinja',     level:20, score:55700, emoji:'♻️', color:'#9c27b0', online:false, country:'DE' },
+  { name:'GreenMind',    level:18, score:48300, emoji:'🌍', color:'#2ecc71', online:true,  country:'PH' },
+  { name:'EarthSaver',   level:17, score:41000, emoji:'💚', color:'#27ae60', online:false, country:'AU' },
+  { name:'WindRider',    level:15, score:35600, emoji:'🌬️', color:'#90e0ef', online:true,  country:'GB' },
+  { name:'SeedPlanter',  level:14, score:29800, emoji:'🌱', color:'#52b788', online:false, country:'IN' },
+  { name:'OceanGuard',   level:13, score:24100, emoji:'🌊', color:'#0096c7', online:true,  country:'TH' },
+  { name:'SkyRunner',    level:12, score:19400, emoji:'☁️', color:'#ade8f4', online:false, country:'SG' },
+];
+
+// Simulated monthly top players (highest accumulated scores)
+const MONTHLY_PLAYERS = [
+  { name:'EcoWarrior',   level:25, score:342000, emoji:'⭐', color:'#f9c74f', online:true,  country:'PH' },
+  { name:'GreenHero',    level:24, score:315000, emoji:'🌿', color:'#74c69d', online:true,  country:'JP' },
+  { name:'TreeHugger',   level:23, score:289000, emoji:'🌲', color:'#cd7f32', online:false, country:'US' },
+  { name:'CleanAir',     level:22, score:261000, emoji:'💧', color:'#4dd0e1', online:true,  country:'KR' },
+  { name:'SolarPunk',    level:21, score:238000, emoji:'☀️', color:'#f4845f', online:true,  country:'BR' },
+  { name:'EcoNinja',     level:20, score:210000, emoji:'♻️', color:'#9c27b0', online:false, country:'DE' },
+  { name:'GreenMind',    level:18, score:185000, emoji:'🌍', color:'#2ecc71', online:true,  country:'PH' },
+  { name:'EarthSaver',   level:17, score:162000, emoji:'💚', color:'#27ae60', online:false, country:'AU' },
+  { name:'WindRider',    level:15, score:139000, emoji:'🌬️', color:'#90e0ef', online:true,  country:'GB' },
+  { name:'SeedPlanter',  level:14, score:115000, emoji:'🌱', color:'#52b788', online:false, country:'IN' },
+  { name:'OceanGuard',   level:13, score:94000,  emoji:'🌊', color:'#0096c7', online:true,  country:'TH' },
+  { name:'SkyRunner',    level:12, score:75000,  emoji:'☁️', color:'#ade8f4', online:false, country:'SG' },
 ];
 
 const LBScreen = {
-  currentTab: 'global',
+  currentTab: 'daily',
   _refreshInterval: null,
 
   tab(name) {
@@ -41,14 +66,14 @@ const LBScreen = {
     const infoEl = document.getElementById('lb-tab-desc');
     const addFriendEl = document.getElementById('lb-add-friend');
 
-    if (name === 'global') {
-      infoEl.textContent = 'Top eco-runners worldwide competing for the highest green score';
+    if (name === 'daily') {
+      infoEl.textContent = "Today's top eco-runners competing for the highest green score";
       if (addFriendEl) addFriendEl.style.display = 'none';
-    } else if (name === 'friends') {
-      infoEl.textContent = 'Challenge your friends! Your friend list appears here.';
+    } else if (name === 'weekly') {
+      infoEl.textContent = 'Best scores accumulated over the past 7 days';
       if (addFriendEl) addFriendEl.style.display = 'none';
     } else {
-      infoEl.textContent = 'Top eco-runners in your local area (Western Visayas, PH)';
+      infoEl.textContent = 'All-time best scores for this month across all eco-runners';
       if (addFriendEl) addFriendEl.style.display = 'none';
     }
 
@@ -77,18 +102,12 @@ const LBScreen = {
     };
 
     let pool;
-    if (tab === 'global') {
-      pool = GLOBAL_PLAYERS.map(p => ({ ...p, isYou: false }));
-    } else if (tab === 'friends') {
-      // Real friends + simulated ones if empty
-      const realFriends = (d.friends || []).map(f => ({ ...f, isYou: false, online: Math.random() > 0.4 }));
-      const fakeFriends = realFriends.length < 2 ? [
-        { name:'ClassmateA', level:5, score:1500, emoji:'🌿', color:'#74c69d', online:true, isYou:false, country:'PH' },
-        { name:'FriendB',    level:3, score:800,  emoji:'♻️', color:'#9c27b0', online:false,isYou:false, country:'PH' },
-      ] : [];
-      pool = [...realFriends, ...fakeFriends];
+    if (tab === 'daily') {
+      pool = DAILY_PLAYERS.map(p => ({ ...p, isYou: false }));
+    } else if (tab === 'weekly') {
+      pool = WEEKLY_PLAYERS.map(p => ({ ...p, isYou: false }));
     } else {
-      pool = LOCAL_PLAYERS.map(p => ({ ...p, isYou: false }));
+      pool = MONTHLY_PLAYERS.map(p => ({ ...p, isYou: false }));
     }
 
     // Insert "You" at correct position
@@ -162,7 +181,7 @@ const LBScreen = {
   refresh() {
     SoundFX.play('click');
     // Simulate slight score changes (live feel)
-    GLOBAL_PLAYERS.forEach(p => {
+    DAILY_PLAYERS.forEach(p => {
       if (p.online && Math.random() > 0.6) p.score += Math.floor(Math.random() * 50);
     });
     this.render(this.currentTab);
