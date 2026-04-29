@@ -252,9 +252,13 @@ body {
   padding: calc(var(--sat) + 8px) 12px 10px;
   display: flex; align-items: flex-start; justify-content: space-between;
   background: linear-gradient(to bottom,rgba(0,0,0,.75),transparent);
-  pointer-events: none; gap: 8px;
+  gap: 8px;
 }
-#game-hud button { pointer-events: all; }
+#game-hud button {
+  pointer-events: all;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
 .hud-l,.hud-r { display: flex; align-items: center; gap: 8px; min-width: 90px; }
 .hud-r { justify-content: flex-end; }
 .hud-c { flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; }
@@ -268,7 +272,7 @@ body {
 .hud-lvlbar { width:clamp(70px,25vw,130px); height:5px; background:rgba(255,255,255,.12); border-radius:3px; overflow:hidden; }
 .hud-lvlfill { height:100%; background:linear-gradient(90deg,#f9c74f,#f8961e); border-radius:3px; width:0; transition:width .4s ease; }
 .hud-lives { display:flex; gap:2px; font-size:clamp(.9rem,4vw,1.1rem); }
-.hud-icon-btn { background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.22); color:#fff; padding:5px 10px; border-radius:8px; cursor:pointer; font-size:.9rem; flex-shrink:0; }
+.hud-icon-btn { background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.22); color:#fff; padding:12px 14px; border-radius:12px; cursor:pointer; font-size:1rem; flex-shrink:0; min-width:48px; min-height:48px; display:flex; align-items:center; justify-content:center; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 
 /* Swipe zone */
 #swipe-zone {
@@ -279,6 +283,7 @@ body {
 
 /* Swipe hint */
 .swipe-hint {
+  pointer-events: auto;
   position: fixed; left:50%; top:50%; transform:translate(-50%,-50%);
   z-index: 250; background: rgba(0,0,0,.85);
   border: 1px solid rgba(46,204,113,.4); border-radius: 20px;
@@ -289,7 +294,7 @@ body {
 .swipe-hint.hidden { display: none; }
 .sh-row { display: flex; align-items: center; gap: 12px; font-size: .9rem; }
 .sh-arrow { font-size: 1.4rem; color: var(--g4); min-width: 36px; text-align: center; }
-.sh-ok { background: var(--g3); border:none; border-radius:12px; color:#051a08; font-family:var(--fb); font-weight:800; font-size:.9rem; padding:10px 24px; cursor:pointer; margin-top:4px; }
+.sh-ok { background: var(--g3); border:none; border-radius:14px; color:#051a08; font-family:var(--fb); font-weight:800; font-size:.95rem; padding:14px 26px; cursor:pointer; margin-top:4px; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 
 /* Overlays */
 .full-overlay {

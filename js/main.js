@@ -74,6 +74,24 @@ window.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('touchstart', _unlockAudio, { once: true, passive: true });
   document.addEventListener('click',      _unlockAudio, { once: true, passive: true });
 
+  // ── Improve game controls on mobile WebView buttons ──
+  const pauseBtn = document.getElementById('pause-btn');
+  if (pauseBtn) {
+    pauseBtn.addEventListener('click', () => { Game.pause(); });
+    pauseBtn.addEventListener('touchend', e => {
+      e.preventDefault();
+      Game.pause();
+    }, { passive: false });
+  }
+  const swipeOkBtn = document.querySelector('#swipe-hint .sh-ok');
+  if (swipeOkBtn) {
+    swipeOkBtn.addEventListener('click', () => { closeSwipeHint(); });
+    swipeOkBtn.addEventListener('touchend', e => {
+      e.preventDefault();
+      closeSwipeHint();
+    }, { passive: false });
+  }
+
   // ── Prevent pull-to-refresh and iOS bounce ──
   document.body.addEventListener('touchmove', e => {
     if (!document.getElementById('s-game').classList.contains('active')) {
